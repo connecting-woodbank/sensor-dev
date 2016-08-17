@@ -16,7 +16,7 @@
   A4 - SDA (for I2C connecting RGB sensor)
   A5 - SCL (for I2C connecting RGB sensor)
 
- *  Digital 
+ *  Digital
   D3 - IRVccPin: IR phototransistor power supply
   D4 - SoilVccPin: power supply for soil moisture sensor
   D5 - DHT11_PIN: Air temperature/humidity digital output
@@ -53,15 +53,15 @@ OneWire oneWire(ONE_WIRE_BUS); // Setup a oneWire instance to communicate with a
 DallasTemperature sensors(&oneWire); // Pass our oneWire reference to Dallas Temperature.
 DeviceAddress soilThermometer; // arrays to hold device address
 
-// ISL29125: RGB photosensor 
+// ISL29125: RGB photosensor
 SFE_ISL29125 RGB_sensor; // Declare sensor object
 
 
 // begin setup
-void setup() {
+void setup() {  
   // general setup
   Serial.begin(9600);
-  
+
   // ISL29125 RGB PHOTOSENSOR
   // Initialize the ISL29125 with simple configuration so it starts sampling
   if (RGB_sensor.init())
@@ -78,7 +78,7 @@ void setup() {
   Serial.print("Found ");
   Serial.print(sensors.getDeviceCount(), DEC);
   Serial.println(" devices.");
-  
+
   // report parasite power requirements
   Serial.print("Parasite power is: ");
   if (sensors.isParasitePowerMode()) Serial.println("ON");
@@ -118,13 +118,13 @@ void setup() {
 
 // BEGIN LOOP
 void loop() {
-  
+
   // SOIL MOISTURE
   digitalWrite(SoilVccPin, HIGH);   // enable sensor
   delay(50);  // allow power to settle
-  Serial.print(1023 - (analogRead(SoilMoisturePin))); // read analog voltage then negate so that open circuit -> 0, short circtuit -> 1023
-  Serial.print(", ");
+  unsigned int SoilMoisture = 1023 - (analogRead(SoilMoisturePin)); // read analog voltage then negate so that open circuit -> 0, short circtuit -> 1023
   digitalWrite(SoilVccPin, LOW);   // disable sensor
+
 
   // RGB PHOTOSENSOR
   // Read sensor values (16 bit integers)
@@ -132,16 +132,10 @@ void loop() {
   unsigned int green = RGB_sensor.readGreen();
   unsigned int blue = RGB_sensor.readBlue();
 
-  Serial.print(red, DEC);
-  Serial.print(", ");
-  Serial.print(green, DEC);
-  Serial.print(", ");
-  Serial.print(blue, DEC);
-  Serial.print(", ");
 
   // SOIL TEMPPERATURE
   sensors.requestTemperatures(); // Send the command to get temperatures
-  printTemperature(soilThermometer); // printout temeperature
+  float SoilTemp = sensors.getTempC(soilThermometer);
 
 
   // DHT AIR T/RH SENSOR
@@ -171,21 +165,40 @@ void loop() {
       break;
   }
   // display data
-  Serial.print(DHT.humidity, 1);
-  Serial.print(", ");
-  Serial.print(DHT.temperature, 1);
-  Serial.print(", ");
+signed int AirTemp = DHT.temperature * 10;
+unsigned int AirHumidity = DHT.humidity * 10;
 
 
   //IR PHOTOSENSOR
   digitalWrite(IRVccPin, HIGH);   // enable sensor
-  Serial.print(analogRead(IRPin));  // read level
+  int photoIR = analogRead(IRPin); // read IR level
   digitalWrite(IRVccPin, LOW);   // disable sensor
+
+
+  // DISPLAY data
+  Serial.print(SoilMoisture, DEC); // soil moisture level
+  Serial.print(", ");
+  Serial.print(red, DEC); // RGB: RED
+  Serial.print(", ");
+  Serial.print(green, DEC); // RGB: GREEN
+  Serial.print(", ");
+  Serial.print(blue, DEC); // RGB: BLUE
+  Serial.print(", ");
+  Serial.print(SoilTemp, DEC);  // soil temperature
+  Serial.print(", ");
+  Serial.print(AirTemp, DEC); // Air temperature
+  Serial.print(", ");
+  Serial.print(AirHumidity, DEC); // Air Humidity
+  Serial.print(", ");
+  Serial.print(photoIR);  // IR level
 
 
   // finish
   Serial.println();
   delay(2000);
+
+  // construct message
+
 
 }
 

@@ -23,6 +23,38 @@
   D6 - ONE_WIRE_BUS: Soil temperature digital output
 */
 
+/*
+ * VARIABLES
+ * The values to send are:
+ * SoilMoisture: unsinged int (0-1023)
+ * red: signed int
+ * green: unsigned int
+ * blue: unsigned int
+ * SoilTemp: signed char
+ * AirTemp: signed char
+ * AirHumidity: unsigned char
+ * photoIR: unsigned int (0 - 1023)
+ */
+
+ /*
+  * MESSAGR STRUCTURE
+      msg[0] = SoilMoisture UB
+      msg[1] = SoilMoisture LB;
+      msg[2] = red UB
+      msg[3] = red LB
+      msg[4] = green UB
+      msg[5] = green LB
+      msg[6] = blue UB
+      msg[7] = blue LB
+      msg[8] = SoilTemp
+      msg[9] = AirTemp 
+      msg[10] = AirHumidity
+      msg[11] = photoIR UB
+      msg[12] = photoIR LB
+  */
+
+
+
 
 // Libraries
 #include <Wire.h>
@@ -135,7 +167,7 @@ void loop() {
 
   // SOIL TEMPPERATURE
   sensors.requestTemperatures(); // Send the command to get temperatures
-  float SoilTemp = sensors.getTempC(soilThermometer);
+  signed char SoilTemp = sensors.getTempC(soilThermometer);
 
 
   // DHT AIR T/RH SENSOR
@@ -165,8 +197,8 @@ void loop() {
       break;
   }
   // display data
-signed int AirTemp = DHT.temperature * 10;
-unsigned int AirHumidity = DHT.humidity * 10;
+  signed char AirTemp = DHT.temperature;
+  unsigned char AirHumidity = DHT.humidity;
 
 
   //IR PHOTOSENSOR
@@ -174,6 +206,32 @@ unsigned int AirHumidity = DHT.humidity * 10;
   int photoIR = analogRead(IRPin); // read IR level
   digitalWrite(IRVccPin, LOW);   // disable sensor
 
+
+  // construct message
+  unsigned char msg[13];
+  msg[0] = (SoilMoisture >> 8) & 0xFF;
+  msg[1] = SoilMoisture & 0xFF;
+  msg[2] = (red >> 8) & 0xFF;
+  msg[3] = red & 0xFF;
+  msg[4] = (green >> 8) & 0xFF;
+  msg[5] = green & 0xFF;
+  msg[6] = (blue >> 8) & 0xFF;
+  msg[7] = blue & 0xFF;
+  msg[8] = SoilTemp & 0xFF;
+  msg[9] = AirTemp & 0xFF;
+  msg[10] = AirHumidity & 0xFF;
+  msg[11] = (photoIR >> 8) & 0xFF;
+  msg[12] = photoIR & 0xFF;
+
+  // display msg
+  /*
+  for (int i=0; i<sizeof(msg); i++)
+  {
+    Serial.print(msg[i], HEX);
+    Serial.print(", ");
+  }
+  Serial.println();
+*/
 
   // DISPLAY data
   Serial.print(SoilMoisture, DEC); // soil moisture level
@@ -196,8 +254,6 @@ unsigned int AirHumidity = DHT.humidity * 10;
   // finish
   Serial.println();
   delay(2000);
-
-  // construct message
 
 
 }

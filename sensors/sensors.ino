@@ -63,6 +63,10 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+// GENERAL DEFITIONS
+// is it an arduino mini? - used to set clock rates
+#define ARDUINO_MINI  1
+#define BAUD_RATE 9600
 
 // Define pins for sensors
 // Digital
@@ -92,7 +96,11 @@ SFE_ISL29125 RGB_sensor; // Declare sensor object
 // begin setup
 void setup() {  
   // general setup
-  Serial.begin(9600);
+  #ifdef ARDUINO_MINI   // is it an arduino mini (it has half the clock rate of the nano)
+  Serial.begin(BAUD_RATE*2);
+  #else
+  Serial.begin(BAUD_RATE);
+  #endif
 
   // ISL29125 RGB PHOTOSENSOR
   // Initialize the ISL29125 with simple configuration so it starts sampling

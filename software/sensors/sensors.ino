@@ -101,8 +101,10 @@ void setup() {
   #else
   Serial.begin(BAUD_RATE);
   #endif
+  Serial.println("Serial Comms setup.");
 
   // ISL29125 RGB PHOTOSENSOR
+
   // Initialize the ISL29125 with simple configuration so it starts sampling
   if (RGB_sensor.init())
   {
@@ -111,6 +113,7 @@ void setup() {
 
 
   // DALLAS T/RH SENSOR
+  Serial.println("Initiliase Dallas T sensor");
   Serial.println("Dallas Temperature IC Control Library Demo");
   // locate devices on the bus
   Serial.print("Locating devices...");
@@ -153,139 +156,143 @@ void setup() {
   Serial.println("--------------------------------------------");
   Serial.println();
   Serial.println("Soil Moisture, Light (RGB), Soil Temperature, Air Relative Humidity, Air Temperature, IR Level");
-  delay(5000);
-}
-
-// BEGIN LOOP
-void loop() {
-
-  // SOIL MOISTURE
-  digitalWrite(SoilVccPin, HIGH);   // enable sensor
-  delay(50);  // allow power to settle
-  unsigned int SoilMoisture = 1023 - (analogRead(SoilMoisturePin)); // read analog voltage then negate so that open circuit -> 0, short circtuit -> 1023
-  digitalWrite(SoilVccPin, LOW);   // disable sensor
-
-
-  // RGB PHOTOSENSOR
-  // Read sensor values (16 bit integers)
-  unsigned int red = RGB_sensor.readRed();
-  unsigned int green = RGB_sensor.readGreen();
-  unsigned int blue = RGB_sensor.readBlue();
-
-
-  // SOIL TEMPPERATURE
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  signed char SoilTemp = sensors.getTempC(soilThermometer);
-
-
-  // DHT AIR T/RH SENSOR
-  int chk = DHT.read11(DHT11_PIN);
-  switch (chk)
-  {
-    case DHTLIB_OK:
-      //               Serial.print("OK,\t");
-      break;
-    case DHTLIB_ERROR_CHECKSUM:
-      Serial.print("Checksum error,\t");
-      break;
-    case DHTLIB_ERROR_TIMEOUT:
-      Serial.print("Time out error,\t");
-      break;
-    case DHTLIB_ERROR_CONNECT:
-      Serial.print("Connect error,\t");
-      break;
-    case DHTLIB_ERROR_ACK_L:
-      Serial.print("Ack Low error,\t");
-      break;
-    case DHTLIB_ERROR_ACK_H:
-      Serial.print("Ack High error,\t");
-      break;
-    default:
-      Serial.print("Unknown error,\t");
-      break;
-  }
-  // display data
-  signed char AirTemp = DHT.temperature;
-  unsigned char AirHumidity = DHT.humidity;
-
-
-  //IR PHOTOSENSOR
-  digitalWrite(IRVccPin, HIGH);   // enable sensor
-  int photoIR = analogRead(IRPin); // read IR level
-  digitalWrite(IRVccPin, LOW);   // disable sensor
-
-
-  // construct message
-  unsigned char msg[13];
-  msg[0] = (SoilMoisture >> 8) & 0xFF;
-  msg[1] = SoilMoisture & 0xFF;
-  msg[2] = (red >> 8) & 0xFF;
-  msg[3] = red & 0xFF;
-  msg[4] = (green >> 8) & 0xFF;
-  msg[5] = green & 0xFF;
-  msg[6] = (blue >> 8) & 0xFF;
-  msg[7] = blue & 0xFF;
-  msg[8] = SoilTemp & 0xFF;
-  msg[9] = AirTemp & 0xFF;
-  msg[10] = AirHumidity & 0xFF;
-  msg[11] = (photoIR >> 8) & 0xFF;
-  msg[12] = photoIR & 0xFF;
-
-  // display msg
-  /*
-  for (int i=0; i<sizeof(msg); i++)
-  {
-    Serial.print(msg[i], HEX);
-    Serial.print(", ");
-  }
-  Serial.println();
-*/
-
-  // DISPLAY data
-  Serial.print(SoilMoisture, DEC); // soil moisture level
-  Serial.print(", ");
-  Serial.print(red, DEC); // RGB: RED
-  Serial.print(", ");
-  Serial.print(green, DEC); // RGB: GREEN
-  Serial.print(", ");
-  Serial.print(blue, DEC); // RGB: BLUE
-  Serial.print(", ");
-  Serial.print(SoilTemp, DEC);  // soil temperature
-  Serial.print(", ");
-  Serial.print(AirTemp, DEC); // Air temperature
-  Serial.print(", ");
-  Serial.print(AirHumidity, DEC); // Air Humidity
-  Serial.print(", ");
-  Serial.print(photoIR);  // IR level
-
-
-  // finish
-  Serial.println();
   delay(2000);
-
-
 }
 
-// FUNCTION DEFINTIONS
-
-// soil temperature function to print the temperature for a device
-void printTemperature(DeviceAddress deviceAddress)
-{
-  // method 1 - slower
-  //Serial.print("Temp C: ");
-  //Serial.print(sensors.getTempC(deviceAddress));
-  //Serial.print(" Temp F: ");
-  //Serial.print(sensors.getTempF(deviceAddress)); // Makes a second call to getTempC and then converts to Fahrenheit
-
-  // method 2 - faster
-  float tempC = sensors.getTempC(deviceAddress);
-  Serial.print(tempC);
-  Serial.print(", ");
-  //  Serial.print(" Temp F: ");
-  //  Serial.println(DallasTemperature::toFahrenheit(tempC)); // Converts tempC to Fahrenheit
+void loop(){
+    // DISPLAY data
+  Serial.print("Hello \r\n");
 }
-
-// function to print a device address of soil temperature sensor
+//// BEGIN LOOP
+//void loop() {
+//
+//  // SOIL MOISTURE
+//  digitalWrite(SoilVccPin, HIGH);   // enable sensor
+//  delay(50);  // allow power to settle
+//  unsigned int SoilMoisture = 1023 - (analogRead(SoilMoisturePin)); // read analog voltage then negate so that open circuit -> 0, short circtuit -> 1023
+//  digitalWrite(SoilVccPin, LOW);   // disable sensor
+//
+//
+//  // RGB PHOTOSENSOR
+//  // Read sensor values (16 bit integers)
+//  unsigned int red = RGB_sensor.readRed();
+//  unsigned int green = RGB_sensor.readGreen();
+//  unsigned int blue = RGB_sensor.readBlue();
+//
+//
+//  // SOIL TEMPPERATURE
+//  sensors.requestTemperatures(); // Send the command to get temperatures
+//  signed char SoilTemp = sensors.getTempC(soilThermometer);
+//
+//
+//  // DHT AIR T/RH SENSOR
+//  int chk = DHT.read11(DHT11_PIN);
+//  switch (chk)
+//  {
+//    case DHTLIB_OK:
+//      //               Serial.print("OK,\t");
+//      break;
+//    case DHTLIB_ERROR_CHECKSUM:
+//      Serial.print("Checksum error,\t");
+//      break;
+//    case DHTLIB_ERROR_TIMEOUT:
+//      Serial.print("Time out error,\t");
+//      break;
+//    case DHTLIB_ERROR_CONNECT:
+//      Serial.print("Connect error,\t");
+//      break;
+//    case DHTLIB_ERROR_ACK_L:
+//      Serial.print("Ack Low error,\t");
+//      break;
+//    case DHTLIB_ERROR_ACK_H:
+//      Serial.print("Ack High error,\t");
+//      break;
+//    default:
+//      Serial.print("Unknown error,\t");
+//      break;
+//  }
+//  // display data
+//  signed char AirTemp = DHT.temperature;
+//  unsigned char AirHumidity = DHT.humidity;
+//
+//
+//  //IR PHOTOSENSOR
+//  digitalWrite(IRVccPin, HIGH);   // enable sensor
+//  int photoIR = analogRead(IRPin); // read IR level
+//  digitalWrite(IRVccPin, LOW);   // disable sensor
+//
+//
+//  // construct message
+//  unsigned char msg[13];
+//  msg[0] = (SoilMoisture >> 8) & 0xFF;
+//  msg[1] = SoilMoisture & 0xFF;
+//  msg[2] = (red >> 8) & 0xFF;
+//  msg[3] = red & 0xFF;
+//  msg[4] = (green >> 8) & 0xFF;
+//  msg[5] = green & 0xFF;
+//  msg[6] = (blue >> 8) & 0xFF;
+//  msg[7] = blue & 0xFF;
+//  msg[8] = SoilTemp & 0xFF;
+//  msg[9] = AirTemp & 0xFF;
+//  msg[10] = AirHumidity & 0xFF;
+//  msg[11] = (photoIR >> 8) & 0xFF;
+//  msg[12] = photoIR & 0xFF;
+//
+//  // display msg
+//  /*
+//  for (int i=0; i<sizeof(msg); i++)
+//  {
+//    Serial.print(msg[i], HEX);
+//    Serial.print(", ");
+//  }
+//  Serial.println();
+//*/
+//
+//  // DISPLAY data
+//  Serial.print(SoilMoisture, DEC); // soil moisture level
+//  Serial.print(", ");
+//  Serial.print(red, DEC); // RGB: RED
+//  Serial.print(", ");
+//  Serial.print(green, DEC); // RGB: GREEN
+//  Serial.print(", ");
+//  Serial.print(blue, DEC); // RGB: BLUE
+//  Serial.print(", ");
+//  Serial.print(SoilTemp, DEC);  // soil temperature
+//  Serial.print(", ");
+//  Serial.print(AirTemp, DEC); // Air temperature
+//  Serial.print(", ");
+//  Serial.print(AirHumidity, DEC); // Air Humidity
+//  Serial.print(", ");
+//  Serial.print(photoIR);  // IR level
+//
+//
+//  // finish
+//  Serial.println();
+//  delay(2000);
+//
+//
+//}
+//
+//// FUNCTION DEFINTIONS
+//
+//// soil temperature function to print the temperature for a device
+//void printTemperature(DeviceAddress deviceAddress)
+//{
+//  // method 1 - slower
+//  //Serial.print("Temp C: ");
+//  //Serial.print(sensors.getTempC(deviceAddress));
+//  //Serial.print(" Temp F: ");
+//  //Serial.print(sensors.getTempF(deviceAddress)); // Makes a second call to getTempC and then converts to Fahrenheit
+//
+//  // method 2 - faster
+//  float tempC = sensors.getTempC(deviceAddress);
+//  Serial.print(tempC);
+//  Serial.print(", ");
+//  //  Serial.print(" Temp F: ");
+//  //  Serial.println(DallasTemperature::toFahrenheit(tempC)); // Converts tempC to Fahrenheit
+//}
+//
+//// function to print a device address of soil temperature sensor
 void printAddress(DeviceAddress deviceAddress)
 {
   for (uint8_t i = 0; i < 8; i++)

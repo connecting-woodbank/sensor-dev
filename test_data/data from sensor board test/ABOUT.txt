@@ -1,0 +1,24 @@
+Data format for bitscope files
+
+- from DSO (??) application: [DSO guide](http://www.bitscope.com/software/dso/guide/2.5/?p=recorder)
+
+trigger	stamp	channel	index	type	delay	factor	rate	count	data
+
+- trigger: number identifying the tigger event
+- stamp: timestamp identifying the time (of day) of the trigger
+- channel: channel number (1-11)
+- index: index identifying all records belonging to the same frame (seems to be the same within the same trigger event for channels 4-11 but different for 0,1)
+- type: capture data type - encoded as digit e.g. 0
+- delay: post-trigger delay applied (if any)
+- factor: decimation/oversample factor applied (if any)
+- rate: sample rate at which data was captured (Hz??)
+- count: number of samples captured in the  record (total time is count/rate)
+- data: data is formatted in rows per channel per trigger followed by entries from next trigger
+
+DATA PROCESSING
+
+- The easiest way to process the data is to manually select one specific trigger from the data e.g. in excel and then copy/paste transpose to another sheet.  The channels not used can then be imported using Matlab scripts.  An example data formate is shown.	
+ 
+
+
+

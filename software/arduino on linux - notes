@@ -1,0 +1,41 @@
+Notes on linux arduino development
+
+Libraries
+On linux the arduino libraries are located at: home/USERNAME/sketchbook/libraries/
+Each library is then placed within a seperate folder.  Librares used inthis project copied here from the "libraries" folder.
+To use these "machine" c.f. "project" libraries, the libraries are included within <> brackets rather than qutations marks.
+
+Serial ports
+Ports can e found on linux using the command:
+$ dmesg | grep tty
+This lists the serial ports available.
+
+Serial monitors
+As on all systems, there are several serial monitors available for linux.  
+The one that I use here is the "screen" utility.
+To connect to this run the command:
+screen <serial_port> <baud_rate>
+e.g.
+screen /dev/ttyUSB1 9600
+
+To close the session, close the window by using the command
+Ctrl-a \ (thats hold down Ctrl key, whilst pressing "a", release both then press "\".  A y/n dialog then appears.
+
+	Alternative serial monitors
+cu
+To open a serial port e.g. USB1 at 9600 baud rate:
+cu -l /dev/ttyUSB1 -s 9600
+To exit use tilde dot (~.).
+NOTE: cannot get to quit
+
+	minicom
+This needs setting up beforehand to use the correct port/baud rate
+TO setup open minicom as root with the configure optin
+sudo minicom -s
+
+From the the default baud rate and serial port can be conifugred and saved.
+Then minicom can be run simply by typing minicom from the termainla window
+To exit Ctrl-A x
+
+Gtkterm 
+- gui but can't get it to open a port successfully.

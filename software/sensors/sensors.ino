@@ -5,7 +5,7 @@
     Andy Stevenson-Jones
 
     Arduino reads sensors and returns formatted data through the COM port
-    Format: "Soil Moisture, Light (RGB), Soil Temperature, Air Relative Humidity, Air Temperature, IR Level"
+    Format: "Soil Moisture, Light (RGB), Soil Temperature, Air Temperature, Air Relative Humidity, IR Level"
 */
 
 
@@ -37,7 +37,7 @@
  */
 
  /*
-  * MESSAGR STRUCTURE
+  * MESSAGE STRUCTURE
       msg[0] = SoilMoisture UB
       msg[1] = SoilMoisture LB;
       msg[2] = red UB
@@ -150,7 +150,7 @@ void setup() {
   Serial.println("Node setup complete.");
   Serial.println("--------------------------------------------");
   Serial.println();
-  Serial.println("Soil Moisture, Light (RGB), Soil Temperature, Air Relative Humidity, Air Temperature, IR Level");
+  Serial.println("Soil Moisture, Light (RGB), Soil Temperature, Air Temperature, Air Relative Humidity, IR Level, DHT checksum error");
   delay(2000);
 }
 
@@ -178,28 +178,35 @@ void loop() {
 
   // DHT AIR T/RH SENSOR
   int chk = DHT.read11(DHT11_PIN);
+  int dht_checksum_error=0; // variable to hold error codes
   switch (chk)
   {
     case DHTLIB_OK:
       //               Serial.print("OK,\t");
       break;
     case DHTLIB_ERROR_CHECKSUM:
-      Serial.print("Checksum error,\t");
+      //Serial.print("Checksum error,\t");
+      dht_checksum_error |= 0x01;
       break;
     case DHTLIB_ERROR_TIMEOUT:
-      Serial.print("Time out error,\t");
+      //Serial.print("Time out error,\t");
+      dht_checksum_error |= 0x02;
       break;
     case DHTLIB_ERROR_CONNECT:
-      Serial.print("Connect error,\t");
+      //Serial.print("Connect error,\t");
+      dht_checksum_error |= 0x04;
       break;
     case DHTLIB_ERROR_ACK_L:
-      Serial.print("Ack Low error,\t");
+      //Serial.print("Ack Low error,\t");
+      dht_checksum_error |= 0x08;
       break;
     case DHTLIB_ERROR_ACK_H:
-      Serial.print("Ack High error,\t");
+      //Serial.print("Ack High error,\t");
+      dht_checksum_error |= 0x10;
       break;
     default:
-      Serial.print("Unknown error,\t");
+      //Serial.print("Unknown error,\t");
+      dht_checksum_error |= 0x80;
       break;
   }
   // display data
@@ -255,6 +262,8 @@ void loop() {
   Serial.print(AirHumidity, DEC); // Air Humidity
   Serial.print(", ");
   Serial.print(photoIR);  // IR level
+  Serial.print(", ");
+  Serial.print(dht_checksum_error);  // DHT checksum error
 
 
   // finish

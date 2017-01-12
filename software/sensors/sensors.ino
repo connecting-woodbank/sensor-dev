@@ -58,7 +58,7 @@
 
 // Libraries
 #include <Wire.h>
-#include "SparkFunISL29125.h"
+#include <SparkFunISL29125.h>
 #include <dht.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>

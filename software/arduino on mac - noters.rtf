@@ -30,7 +30,7 @@ for arduino mini the response should include an entry such as /dev/cu.wchusbseri
 \b open
 \b0  ports using terminal\
 - as per linux there are a variety of options available\
-\ul screen\
+\ul screen\ulnone  - preferred option\ul \
 \ulnone to open a port e.g. wchusbserialfd1420 at 9600 baud from terminal use the following:\
 \'93screen /dev/tty.wchusbserialfd1420 9600\'94\
 to quit use Ctrl-a Ctrl-\\\
@@ -39,6 +39,9 @@ to quit use Ctrl-a Ctrl-\\\
 \ulnone to open a port e.g. wchusbserialfd1420 at 9600 baud from terminal use the following:\
 \'93sudo cu -l /dev/tty.wchusbserialfd1420 -s 9600\'94\
 to disconnect: \'93~.\'94 followed by Enter\
+\
+\ul SSH keys\
+\ulnone - useful guide to generating and using SSH keys on mac for github\
 \
 \
 \

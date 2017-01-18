@@ -14,10 +14,10 @@ int serverInit(){
     uint8_t from;
     if (manager.recvfromAck(buf, &len, &from))
     {
-      Serial.print("got request from : 0x");
-      Serial.print(from,HEX);
+  //    Serial.print("got request from : 0x");
+      Serial.print(from,DEC);
       Serial.print(": ");
-      Serial.println((char*)buf);
+ //     Serial.println((char*)buf);
       for (int i=0; i<sizeof(buf); i++){Serial.print(buf[i],DEC);Serial.print(",");}
       Serial.print("\r\n");
       String message="Hello back client " + String(from);

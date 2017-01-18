@@ -18,6 +18,8 @@ int serverInit(){
       Serial.print(from,HEX);
       Serial.print(": ");
       Serial.println((char*)buf);
+      for (int i=0; i<sizeof(buf); i++){Serial.print(buf[i],DEC);Serial.print(",");}
+      Serial.print("\r\n");
       String message="Hello back client " + String(from);
       uint8_t data[message.length()];
       message.toCharArray(data,message.length()+1);

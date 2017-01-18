@@ -6,11 +6,11 @@ int clientInit()
     return 1;
 }
 
-int sendToServer(String message){
-  uint8_t data[message.length()];
-  message.toCharArray(data,message.length()+1);
+int sendToServer(unsigned char *message, uint8_t message_length){
+  uint8_t data[sizeof(message)];
+  // message.toCharArray(data,sizeof(message)+1);
   // Send a message to manager_server
-  if (manager.sendtoWait(data, message.length()+1, SERVER_ADDRESS))//using the lenght of the string because the buffer is not clean on startup or message change
+  if (manager.sendtoWait(message, message_length+1, SERVER_ADDRESS))//using the lenght of the string because the buffer is not clean on startup or message change
   {
     // Now wait for a reply from the server
     uint8_t len = sizeof(buf);

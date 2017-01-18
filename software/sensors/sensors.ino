@@ -12,12 +12,10 @@
 /* Pin allocations for Arduino
  *  Analog
   A0 - SoilMoisturePin: soil moisture analog output
-  A1 - IRPin: IR phototransistor analog output
   A4 - SDA (for I2C connecting RGB sensor)
   A5 - SCL (for I2C connecting RGB sensor)
 
  *  Digital
-  D3 - IRVccPin: IR phototransistor power supply
   D4 - SoilVccPin: power supply for soil moisture sensor
   D5 - DHT11_PIN: Air temperature/humidity digital output
   D6 - ONE_WIRE_BUS: Soil temperature digital output
@@ -33,7 +31,6 @@
  * SoilTemp: signed char
  * AirTemp: signed char
  * AirHumidity: unsigned char
- * photoIR: unsigned int (0 - 1023)
  */
 
  /*
@@ -137,7 +134,7 @@ void setup() {
   Serial.println();
 
 
-  // DHT11 soil moisture
+  // soil moisture
   pinMode(SoilVccPin, OUTPUT);  // Vcc pin for soil moisture sensor
   digitalWrite(SoilVccPin, LOW);   // disable sensor
 
